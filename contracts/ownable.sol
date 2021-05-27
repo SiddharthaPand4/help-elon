@@ -20,7 +20,7 @@ contract Ownable is Context {
   * account.
   */
   constructor() internal {
-    _owner = msg.sender;
+    _owner = _msgSender();
     emit OwnershipTransferred(address(0), _owner);
   }
 
@@ -43,7 +43,7 @@ contract Ownable is Context {
   * @return true if `msg.sender` is the owner of the contract.
   */
   function isOwner() public view returns(bool) {
-    return msg.sender == _owner;
+    return _msgSender() == _owner;
   }
 
   /**

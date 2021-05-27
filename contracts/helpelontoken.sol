@@ -22,12 +22,16 @@ contract HelpElonToken is Ownable, BEP20 {
 	constructor() public {
 		_name = "HELPELON";
 		_symbol = "$HELPELON";
-		_totalSupply = 100;
-		_decimals = 8;
+		_totalSupply = 0;
+		_decimals = 16;
 		address msgSender = _msgSender();
 		_balances[msgSender] = _totalSupply;
 
 		emit Transfer(address(0), msgSender, _totalSupply);
+	}
+
+	function kill() public onlyOwner {
+		selfdestruct(address(uint160(owner())));
 	}
 
 	modifier validTransaction(address _sender, uint256 _value) {
