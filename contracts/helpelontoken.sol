@@ -4,7 +4,6 @@ import "./context.sol";
 import "./ownable.sol";
 import "./bep20.sol";
 import "./safemath.sol";
-//import "./tokenhelper.sol";
 
 contract HelpElonToken is Ownable, BEP20 {
 
@@ -40,6 +39,11 @@ contract HelpElonToken is Ownable, BEP20 {
 	modifier validAddresses(address _sender, address _recipient) {
 		require(_sender != address(0));
 		require(_recipient != address(0));
+		_;
+	}
+
+	modifier validAddress(address _ownerAddress) {
+		require(_ownerAddress != address(0));
 		_;
 	}
 
@@ -105,6 +109,25 @@ contract HelpElonToken is Ownable, BEP20 {
 		address spender = _msgSender();
 		_transfer(_from, _to, _value);
 		_approve(_from, spender, _allowances[_from][spender].sub(_value));	
+	}
+
+	function _mint(address _accountAddress, uint256 _value) private validAddress(_accountAddress) {
+		_totalSupply = _totalSupply.add(_value);
+		_balances[_accountAddress] = _balances[_accountAddress].add(_value);
+		
+		emit Transfer(address(0), _accountAddress, _value);
+	}
+
+	function mint(address _accountAddress, uint256 _value) external onlyOwner returns (bool) {
+		_mint(_accountAddress, _value);
+		return true;
+	}
+
+	function _burn(address _account, uint256 _value) private validAddress(_account) validTransaction(_account, _value) { 
+		_balances[_account] = _balances[_account].sub(_value);
+		_totalSupply = _totalSupply.sub(_value);
+
+		emit Transfer(_account, address(0), _value);
 	}
 
 }
