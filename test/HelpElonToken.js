@@ -85,7 +85,26 @@ contract("HelpElonToken", (accounts) => {
 	})
 	context("test ownership related functions", async () => {
 		it("should transfer ownership", async ()=> {
-			//TODO write tests 
+			const owner = await contractInstance.owner();
+			let result = await contractInstance.transferOwnership(bob, {from: owner});
+			// now new owner is bob
+			const newOwner = await contractInstance.owner();
+			expect(newOwner).to.equal(bob);
+			// test if non owner can transfer ownership
+			await utils.shouldThrow(contractInstance.transferOwnership(alice, {from: alice}));
+		})
+		it("should be able to renounce ownership", async ()=> {
+			const owner = await contractInstance.owner();
+			await utils.shouldThrow(contractInstance.renounceOwnership({from: denise}));
+			let result = await contractInstance.renounceOwnership({from: owner});
+			const newOwner = await contractInstance.owner();
+			expect(newOwner).to.not.equal(owner);
+		})
+		it("check if it returns actual owner", async ()=> {
+			const owner = await contractInstance.owner();
+			let result = await contractInstance.transferOwnership(denise, {from: owner});
+			const newOwner = await contractInstance.owner();
+			expect(newOwner).to.equal(denise);
 		})
 	})
 })
