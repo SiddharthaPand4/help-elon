@@ -3,3 +3,4 @@ node_modules/
 package-lock.json
 web-app/nft-store/node_modules/
 web-app/nft-store/yarn.lock
+.secret
